@@ -81,13 +81,16 @@
 			    //echo "New record created successfully";
 			    $success = true; 
 			} else {
-			    echo "Error: " . "<br>" . $conn->error;
+			    //echo "Error: " . "<br>" . $conn->error;
+			    $success = "error"; 
 			}
 			
 			
 			
 			
 			//$conn->close();
+		}else{
+			$success = "error"; 
 		}
 		
 	}
@@ -103,9 +106,9 @@
 
 <?php 
 	
-	if($success == true){
+	if($success === true){
 ?>
-		<div class="alert alert-Success alert-dismissible fade show" role="alert">
+		<div class="alert alert-success alert-dismissible fade show" role="alert">
 		  <strong>Dato insertado correctamente</strong>
 		  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
 		    <span aria-hidden="true">&times;</span>
@@ -116,13 +119,29 @@
 	
 ?>
 
+<?php 
+	
+	if($success == "error"){
+?>
+		<div class="alert alert-danger alert-dismissible fade show" role="alert">
+		  <strong>Ha habido un error por favor intenta de nuevo</strong>
+		  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		    <span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+<?php
+	}
+	
+?>
+
+
 <div class="container">
 	<br>
 	<h2 class="text-center">Agenda</h2>
 	<br>
 	<div class="row">
 		<div class="col-md-2">
-			<button class="btn btn-success btn-sm">Add contact</button>
+			<button class="btn btn-success btn-sm" data-toggle="modal" data-target="#addModal">Add contact</button>
 		</div>
 	</div>	
 	<br><br>
@@ -169,43 +188,46 @@
 
 
 
-<p>
-	<span class="error">* required field</span>
-</p>
+<!-- Modal -->
+<div class="modal fade" id="addModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Add Contact</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
 
-<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
-	Name: <input type="text" name="name" value="<?php echo $name;?>">
-	<span class="error">* <?php echo $nameErr;?></span>
-	<br><br>
-	E-mail: <input type="text" name="email" value="<?php echo $email;?>">
-	<span class="error">* <?php echo $emailErr;?></span>
-	<br>
-	<br>
-	Website: <input type="text" name="website" value="<?php echo $website;?>">
-	<span class="error"><?php echo $websiteErr;?></span>
-	<br>
-	<br>
-	Comment: <textarea name="comment" rows="5" cols="40"><?php echo $comment;?></textarea>
-	<br>
-	<br>
+      <div class="modal-body">
 
-	<input type="submit" name="submit" value="Submit">  
-</form>
+		<p>
+			<span class="error">* required field</span>
+		</p>
+		
+		<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
+			Name: <input type="text" name="name" value="<?php if($success=="error"){echo $name;}?>">
+			<span class="error">* <?php echo $nameErr;?></span>
+			<br><br>
+			E-mail: <input type="text" name="email" value="<?php if($success=="error"){echo $email;}?>">
+			<span class="error">* <?php echo $emailErr;?></span>
+			<br>
+			<br>
+			Website: <input type="text" name="website" value="<?php if($success=="error"){echo $website;}?>">
+			<span class="error"><?php echo $websiteErr;?></span>
+			<br>
+			<br>
+			Comment: <textarea name="comment" rows="5" cols="40"><?php if($success=="error"){echo $comment;}?></textarea>
+			<br>
+			<br>
+			<input type="submit" name="submit" value="Save" class="btn btn-primary">		
 
-<?php
-/*
-	echo "<h2>Posted Data:</h2>";
-	echo $name;
-	echo "<br>";
-	echo $email;
-	echo "<br>";
-	echo $website;
-	echo "<br>";
-	echo $comment;
-	echo "<br>"
-*/
+		</form>
+      </div>
+    </div>
+  </div>
+</div>
 
-?>
 
 		
 		<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
