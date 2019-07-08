@@ -24,6 +24,7 @@
 <?php
 	
 	$success = "";
+	$success_remove = "";
 	
 	// define variables and set to empty values
 	$nameErr = $emailErr = $websiteErr = "";
@@ -66,32 +67,57 @@
 			$comment = test_input($_POST["comment"]);
 		}
 		
-		if( 
-			($nameErr == "") && (isset($_POST["name"]) == true) && 
-			($emailErr == "") && (isset($_POST["email"]) == true) &&  
-			($websiteErr == "") && (isset($_POST["website"])== true)  
-		){
+		if (isset($_POST["id"]) != true) {
+			if( 
+				($nameErr == "") && (isset($_POST["name"]) == true) && 
+				($emailErr == "") && (isset($_POST["email"]) == true) &&  
+				($websiteErr == "") && (isset($_POST["website"])== true)   
+			){
+				
+				// DO POST
+				$sql_insert = "INSERT INTO agenda_users (name, email, website, comment) VALUES ('".$_POST["name"]."', '".$_POST["email"]."', '".$_POST["website"]."', '".$comment."')";
+				
+				//echo $sql_insert;
+				
+				if (mysqli_query($link, $sql_insert) === TRUE) {
+				    //echo "New record created successfully";
+				    $success = true; 
+				} else {
+				    //echo "Error: " . "<br>" . $conn->error;
+				    $success = "error"; 
+				}
+				
+				
+				
+				
+				//$conn->close();
+			}else{
+				$success = "error"; 				
+			}
+		}else{
 			
-			// DO POST
-			$sql_insert = "INSERT INTO agenda_users (name, email, website, comment) VALUES ('".$_POST["name"]."', '".$_POST["email"]."', '".$_POST["website"]."', '".$comment."')";
-			
-			//echo $sql_insert;
-			
-			if (mysqli_query($link, $sql_insert) === TRUE) {
-			    //echo "New record created successfully";
-			    $success = true; 
-			} else {
-			    //echo "Error: " . "<br>" . $conn->error;
-			    $success = "error"; 
+			if (isset($_POST["id"]) == true) {
+				
+				//echo "remove " . $_POST["id"];
+				
+				$sql_remove = "DELETE FROM agenda_users WHERE id = " . $_POST["id"];
+				
+				//echo $sql_insert;
+				
+				if (mysqli_query($link, $sql_remove) === TRUE) {
+				    //echo "New record created successfully";
+				    $success_remove = true; 
+				} else {
+				    //echo "Error: " . "<br>" . $conn->error;
+				    $success_remove = "error"; 
+				}
+				
+				
+				
+				
 			}
 			
-			
-			
-			
-			//$conn->close();
-		}else{
-			$success = "error"; 
-		}
+		}	
 		
 	}
 
@@ -101,6 +127,11 @@
 		$data = htmlspecialchars($data);
 		return $data;
 	}
+	
+
+	
+	
+	
 ?>
 
 
@@ -119,9 +150,25 @@
 	
 ?>
 
+
 <?php 
 	
-	if($success == "error"){
+	if($success_remove === true){
+?>
+		<div class="alert alert-success alert-dismissible fade show" role="alert">
+		  <strong>Dato eliminado correctamente</strong>
+		  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+		    <span aria-hidden="true">&times;</span>
+		  </button>
+		</div>
+<?php
+	}
+	
+?>
+
+<?php 
+	
+	if($success === "error"){
 ?>
 		<div class="alert alert-danger alert-dismissible fade show" role="alert">
 		  <strong>Ha habido un error por favor intenta de nuevo</strong>
@@ -168,7 +215,7 @@
 	                echo "<td>" . $row['email'] . "</td>";
 	                echo "<td>" . $row['website'] . "</td>";
 	                echo "<td>" . $row['comment'] . "</td>";
-					echo '<th> <button class="btn btn-danger btn-sm">remove</button> </th>';	                			                
+					echo '<th><form method="post" action="/phpAgenda/index.php"><input type="hidden" name="id" value='.$row['id'].'> <button class="btn btn-danger btn-sm" type="submit">remove</button></form> </th>';	                			                
 	            echo "</tr>";
 	        }
 	        echo "</table>";
@@ -206,18 +253,18 @@
 		</p>
 		
 		<form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]);?>">  
-			Name: <input type="text" name="name" value="<?php if($success=="error"){echo $name;}?>">
+			Name: <input type="text" name="name" value="<?php if($success==="error"){echo $name;}?>">
 			<span class="error">* <?php echo $nameErr;?></span>
 			<br><br>
-			E-mail: <input type="text" name="email" value="<?php if($success=="error"){echo $email;}?>">
+			E-mail: <input type="text" name="email" value="<?php if($success==="error"){echo $email;}?>">
 			<span class="error">* <?php echo $emailErr;?></span>
 			<br>
 			<br>
-			Website: <input type="text" name="website" value="<?php if($success=="error"){echo $website;}?>">
+			Website: <input type="text" name="website" value="<?php if($success==="error"){echo $website;}?>">
 			<span class="error"><?php echo $websiteErr;?></span>
 			<br>
 			<br>
-			Comment: <textarea name="comment" rows="5" cols="40"><?php if($success=="error"){echo $comment;}?></textarea>
+			Comment: <textarea name="comment" rows="5" cols="40"><?php if($success==="error"){echo $comment;}?></textarea>
 			<br>
 			<br>
 			<input type="submit" name="submit" value="Save" class="btn btn-primary">		
