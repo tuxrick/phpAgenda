@@ -1,14 +1,10 @@
 <?php
-$servername = "pinguspace.com";
-$username = "pinguspa_phpAgenda";
-$password = "PHPAgenda!!";
-
-// Create connection
-$conn = mysqli_connect($servername, $username, $password);
-
+/* Attempt MySQL server connection. Assuming you are running MySQL
+server with default setting (user 'root' with no password) */
+$link = mysqli_connect("pinguspace.com", "pinguspa_phpAgenda", "PHPAgenda!!", "pinguspa_phpAgenda");
+ 
 // Check connection
-if (!$conn) {
-    die("Connection failed: " . mysqli_connect_error());
+if($link === false){
+    die("ERROR: Could not connect. " . mysqli_connect_error());
 }
-echo "Connected successfully";
 ?>
