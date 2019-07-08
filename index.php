@@ -4,10 +4,15 @@
 		<style>
 			.error {color: #FF0000;}
 		</style>
+		<?php require 'connection.php';?>
+		
 	</head>
 	<body>  
 
 <?php
+	
+	
+	
 	// define variables and set to empty values
 	$nameErr = $emailErr = $websiteErr = "";
 	$name = $email = $comment = $website = "";
